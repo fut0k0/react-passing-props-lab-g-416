@@ -1,7 +1,44 @@
-import React from 'react';
+import React from "react";
+import FruitBasket from "./FruitBasket";
 
-import FruitBasket from './FruitBasket';
+class App extends React.Component {
 
-const App = () => <FruitBasket />;
+	state = {
+		fruit: [],
+		filters: [],
+		currentFilter: null
+	}
 
-export default App;
+	fetchFruit = () => {
+		fetch("/api/fruit")
+		.then(data => data.json())
+		.then(fruit => this.setState({fruit}))
+	}
+
+	fetchFilters = () => {
+		fetch("/api/fruit_types")
+		.then(data => data.json())
+		.then(filters => this.setState({filters}))
+	}
+
+	handleFilterChange = event => this.setState({currentFilter: event.target.value})
+
+	componentWillMount() {
+		this.fetchFruit();
+		this.fetchFilters();
+	}
+
+	render() {
+		const {fruit, filters, currentFilter} = this.state
+
+		return (
+			<FruitBasket fruit={fruit}
+									 filters={filters}
+									 currentFilter={currentFilter}
+									 updateFilterCallback={this.handleFilterChange} />
+		)
+	}
+
+}
+
+export default App
